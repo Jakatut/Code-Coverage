@@ -52,19 +52,18 @@ const RepositoryReducer = (state: RepositoryState, action: RepositoryActions): R
     const searchRepository = ({query}: RepositoryPayload[RepositoryTypes.Search]) => {
         const newState = cloneDeep(state);
         if (query.length === 0) {
-            newState.query_results = null
+            newState.query_results = undefined
             return newState
         }
         newState.query_results = [];
         let found_ids: number[] = []
         forEachNode(newState.tree, (node) => {
-            if ((node.nodeData as item_data).name.includes(query)) {
+            if ((node.nodeData as item_data).path.includes(query)) {
                 if (!found_ids.includes(node.id as number)) {
                     if ((node.nodeData as item_data).type === item_type.Directory ) {
                         node.isExpanded = true;
-                        // Don't display the same file if the parent is found.
                         forEachNode(node.childNodes, (child) => {
-                            found_ids.push(child.id as number);
+                            found_ids.push(child.id as number)
                         })
                     }
                     node.isSelected = true;

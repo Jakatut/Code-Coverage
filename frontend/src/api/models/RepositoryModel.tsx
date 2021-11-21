@@ -67,7 +67,7 @@ export const file = (id: number, name: string, path: string):TreeNodeInfo => {
 export const RepositoryItemToTreeNodeInfo = (item: RepositoryItem, path: string): TreeNodeInfo => {
     if (item.type === item_type.Directory) {
         return folder(item.id, true, item.name, path + "/" + item.name, item.children ? item.children.map((child): TreeNodeInfo => {
-            return RepositoryItemToTreeNodeInfo(child, item.name);
+            return RepositoryItemToTreeNodeInfo(child, path + "/" + item.name);
         }) : []);
     } else if (item.type === item_type.File){
         return file(item.id, item.name, path + "/" + item.name); 
