@@ -1,55 +1,58 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import RepositoryInterface from 'interfaces/RepositoryInterface';
-import { Classes, Icon, Intent, TreeNodeInfo, Tree } from "@blueprintjs/core";
+import React, { useEffect } from 'react';
+import { Classes, TreeNodeInfo, Tree } from "@blueprintjs/core";
 import { useRepositoryDispatch, useRepositoryState } from 'context/providers/RepositoryProvider';
-import { RepositoryTypes } from 'context/actions/RepositoryActions';
-import { Example } from '@blueprintjs/docs-theme';
+import { NodePath, RepositoryTypes } from 'context/actions/RepositoryActions';
+import RepositoryApi from 'api/RepositoryApi';
+import SearchBar from 'components/SearchBar';
 
-type NodePath = number[];
-
-
-const Repository = ({ name }: RepositoryInterface) => {
+const Repository = () => {
 
     const repositoryState = useRepositoryState();
     const repositoryDispatcher = useRepositoryDispatch();
 
     const handleNodeClick = React.useCallback(
         (node: TreeNodeInfo, nodePath: NodePath, e: React.MouseEvent<HTMLElement>) => {
-            console.log("hii!");
             const originallySelected = node.isSelected;
             if (!e.shiftKey) {
-                repositoryDispatcher.dispatch({ type: RepositoryTypes.DeselectAll, payload: {} });
+                repositoryDispatcher({ type: RepositoryTypes.DeselectAll, payload: {} });
             }
-            repositoryDispatcher.dispatch({
+            repositoryDispatcher({
                 payload: { path: nodePath, isSelected: originallySelected == null ? true : !originallySelected },
                 type: RepositoryTypes.Select
             });
-    },[repositoryDispatcher]);
+    },[]);
 
     const handleNodeCollapse = React.useCallback((_node: TreeNodeInfo, nodePath: NodePath) => {
-        repositoryDispatcher.dispatch({
+        repositoryDispatcher({
             payload: { path: nodePath, isExpanded: false },
             type: RepositoryTypes.Expand,
         });
-    }, [repositoryDispatcher]);
+    }, []);
 
     const handleNodeExpand = React.useCallback((_node: TreeNodeInfo, nodePath: NodePath) => {
-        repositoryDispatcher.dispatch({
+        repositoryDispatcher({
             payload: { path: nodePath, isExpanded: true },
             type: RepositoryTypes.Expand,
         });
-    }, [repositoryDispatcher]);
+    }, []);
+
+    useEffect(() => {
+        const repo = RepositoryApi.GetRepository("repo1");
+        repositoryDispatcher({type: RepositoryTypes.Update, payload: {name: "repo1", repo}})
+        console.log(repositoryState.query_results)
+    }, [])
 
     return (
-        <Example options={false}>
-            <Tree
-                contents={repositoryState.state.tree}
-                onNodeClick={handleNodeClick}
-                onNodeCollapse={handleNodeCollapse}
-                onNodeExpand={handleNodeExpand}
-                className={Classes.ELEVATION_0}
-            />
-        </Example>
+        <>
+        <SearchBar></SearchBar>
+        <Tree
+            contents={repositoryState.query_results ?? repositoryState.tree}
+            onNodeClick={handleNodeClick}
+            onNodeCollapse={handleNodeCollapse}
+            onNodeExpand={handleNodeExpand}
+            className={Classes.ELEVATION_0}
+        />
+        </>
     )
 };
 

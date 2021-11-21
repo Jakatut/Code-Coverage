@@ -1,3 +1,8 @@
+// Create each type of action and give it the params within th RepositoryPayload.
+
+import { Repository } from 'api/models/RepositoryModel';
+
+// This will let us access each payload member within the reducers.
 type ActionMap<M extends { [index: string]: any }> = {
 	[Key in keyof M]: M[Key] extends undefined
 		? {
@@ -9,17 +14,21 @@ type ActionMap<M extends { [index: string]: any }> = {
 		  };
 };
 
+export type NodePath = number[];
+
 export enum RepositoryTypes {
 	Update = 'UPDATE_REPOSITORY',
-	Search = 'DELETE_PRODUCT',
+	Search = 'SEARCH_REPOSITORY',
 	Expand = 'SET_IS_EXPANDED',
     DeselectAll = 'DESELECT_ALL',
     Select = 'SET_IS_SELECTED',
 }
 
-type RepositoryPayload = {
+// The parameters of the repository reducer params
+export type RepositoryPayload = {
 	[RepositoryTypes.Update]: {
         name: string;
+        repo: Repository;
     };
 	[RepositoryTypes.Search]: {
         query: string;
@@ -34,7 +43,7 @@ type RepositoryPayload = {
     }
 };
 
+// Define the actions with the payload parameters. 
 type RepositoryActions = ActionMap<RepositoryPayload>[keyof ActionMap<RepositoryPayload>];
-export type NodePath = number[];
 
 export default RepositoryActions

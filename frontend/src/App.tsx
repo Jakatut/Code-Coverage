@@ -6,9 +6,11 @@ import { RepositoryProvider } from 'context/providers/RepositoryProvider';
 
 function App() {
   return (
-    <RepositoryProvider>
-      <Repository name={"test"}/>
-    </RepositoryProvider>
+    <React.StrictMode>
+      <RepositoryProvider>
+        <Repository/>
+      </RepositoryProvider>
+    </React.StrictMode>
   );
 }
 
