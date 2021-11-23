@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { item_type, Repository } from 'api/models/RepositoryModel';
+import { ItemType, Repository } from 'api/models/RepositoryModel';
 
 export const GetRepository = (name: string): Repository => {
 	return {
@@ -8,23 +8,23 @@ export const GetRepository = (name: string): Repository => {
 			{
                 id: 0,
 				name: 'dir1',
-				type: item_type.Directory,
+				type: ItemType.Directory,
 				children: [
 					{
                         id: 1,
 						name: 'file1.txt',
-						type: item_type.File,
+						type: ItemType.File,
 						children: null,
 					},
 					{
                         id: 2,
 						name: 'dir2',
-						type: item_type.Directory,
+						type: ItemType.Directory,
 						children: [
 							{
 								id: 3,
 								name: "file2.txt",
-								type: item_type.File,
+								type: ItemType.File,
 								children: null
 							}
 						],

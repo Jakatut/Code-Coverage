@@ -44,10 +44,15 @@ const tree: TreeNodeInfo[] = [
     },
 ];
 
+export type QueryResult = {
+    tree: TreeNodeInfo[]|undefined;
+    count: number;
+}
+
 export type RepositoryState = {
     name: string;
     query: string;
-    query_results: TreeNodeInfo[]|undefined;
+    query_results: QueryResult
     tree: TreeNodeInfo[];
 
 }
@@ -56,7 +61,10 @@ const RepositoryInitialState = {
     name: "Default Repository",
     query: "",
     tree: tree,
-    query_results: undefined,
+    query_results: {
+        tree: undefined,
+        count: 0,
+    },
 }
 
 export default RepositoryInitialState;

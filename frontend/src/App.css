@@ -36,3 +36,11 @@
     transform: rotate(360deg);
   }
 }
+
+li::marker {
+  color: white;
+}
+
+.bp3-tree-root {
+  padding-inline-start: 0px;
+}

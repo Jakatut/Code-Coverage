@@ -15,14 +15,17 @@ const SearchBar = () => {
 
     const repositoryState = useRepositoryState();
     const repositoryDispatch = useRepositoryDispatch();
+    console.log(repositoryState.query_results.tree)
 	return (
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", border: "solid 1px black", borderBottom: ""}}>
 		<InputGroup
 			large={true}
 			leftElement={<Icon icon='search' />}
 			onChange={(e) => {repositoryDispatch({type: RepositoryTypes.Search, payload: {query: e.target.value}})}}
 			placeholder='Search Files...'
-			rightElement={resultsTag(repositoryState.query_results?.length ?? 0)}
+			rightElement={resultsTag(repositoryState.query_results.count)}
 		/>
+        </div>
 	);
 };
 

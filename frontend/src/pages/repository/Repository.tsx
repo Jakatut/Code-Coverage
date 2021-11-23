@@ -39,20 +39,24 @@ const Repository = () => {
     useEffect(() => {
         const repo = RepositoryApi.GetRepository("repo1");
         repositoryDispatcher({type: RepositoryTypes.Update, payload: {name: "repo1", repo}})
-        console.log(repositoryState.query_results)
     }, [])
 
     return (
-        <>
-        <SearchBar></SearchBar>
-        <Tree
-            contents={repositoryState.query_results ?? repositoryState.tree}
-            onNodeClick={handleNodeClick}
-            onNodeCollapse={handleNodeCollapse}
-            onNodeExpand={handleNodeExpand}
-            className={Classes.ELEVATION_0}
-        />
-        </>
+        <div style={{ width: "20%", height: "50%", position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)"}}>
+            <SearchBar></SearchBar>
+            <div style={{height: "20px", borderLeft: "solid 1px black", borderRight: "solid 1px black"}}>
+                <b>{repositoryState.name.toUpperCase()}</b>
+            </div>
+            <div style={{ border: "solid 1px black", display: "flex", justifyContent: "center", alignItems: "center", listStyle: "none"}}>
+                <Tree
+                    contents={repositoryState.query_results.tree ?? repositoryState.tree}
+                    onNodeClick={handleNodeClick}
+                    onNodeCollapse={handleNodeCollapse}
+                    onNodeExpand={handleNodeExpand}
+                    className={Classes.ELEVATION_0}
+                />
+            </div>
+        </div>
     )
 };
 
