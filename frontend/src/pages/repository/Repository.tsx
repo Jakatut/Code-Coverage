@@ -4,6 +4,7 @@ import { useRepositoryDispatch, useRepositoryState } from 'context/providers/Rep
 import { NodePath, RepositoryTypes } from 'context/actions/RepositoryActions';
 import RepositoryApi from 'api/RepositoryApi';
 import SearchBar from 'components/SearchBar';
+import RepositoryList from 'pages/repository/RepositoryList';
 
 const Repository = () => {
 
@@ -42,8 +43,10 @@ const Repository = () => {
     }, [])
 
     return (
+        <div>
+        <RepositoryList></RepositoryList>
         <div style={{ width: "20%", height: "50%", position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)"}}>
-            <SearchBar></SearchBar>
+            <SearchBar hint={'Search Files...'}></SearchBar>
             <div style={{height: "20px", borderLeft: "solid 1px black", borderRight: "solid 1px black"}}>
                 <b>{repositoryState.name.toUpperCase()}</b>
             </div>
@@ -56,6 +59,7 @@ const Repository = () => {
                     className={Classes.ELEVATION_0}
                 />
             </div>
+        </div>
         </div>
     )
 };

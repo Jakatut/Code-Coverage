@@ -28,7 +28,7 @@ const RepositoryReducer = (state: RepositoryState, action: RepositoryActions): R
     
     const updateRepository = ({name, repo}: RepositoryPayload[RepositoryTypes.Update]): RepositoryState => {
         const tree = repo.items!.map((item: RepositoryItem): TreeNodeInfo => {
-            return RepositoryModel.RepositoryItemToTreeNodeInfo(item, repo.name);
+            return RepositoryModel.RepositoryItemToTreeNodeInfo(item);
         });
         return {...state, name, tree}
 	};
@@ -62,6 +62,13 @@ const RepositoryReducer = (state: RepositoryState, action: RepositoryActions): R
         return newState;
     };
 
+    const setRepos = ({repos}: RepositoryPayload[RepositoryTypes.SetRepos]) => {
+        return {
+            ...state,
+            repos
+        }
+    }
+
 	switch (action.type) {
         case RepositoryTypes.DeselectAll:
             return deselectAll();
@@ -73,6 +80,8 @@ const RepositoryReducer = (state: RepositoryState, action: RepositoryActions): R
 			return updateRepository(action.payload);
         case RepositoryTypes.Search:
             return searchRepository(action.payload);
+        case RepositoryTypes.SetRepos:
+            return setRepos(action.payload);
 		default:
 			return state;
 	}

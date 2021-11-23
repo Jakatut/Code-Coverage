@@ -3,40 +3,50 @@ import { ItemType, Repository } from 'api/models/RepositoryModel';
 
 export const GetRepository = (name: string): Repository => {
 	return {
-		name,
+		name: "hclsyntax",
 		items: [
 			{
-                id: 0,
-				name: 'dir1',
+				id: 1,
+				path: "hclsyntax",
 				type: ItemType.Directory,
 				children: [
 					{
-                        id: 1,
-						name: 'file1.txt',
+						id: 1,
+						path: "hclsyntax/parser.go",
 						type: ItemType.File,
-						children: null,
+						children: null
 					},
 					{
-                        id: 2,
-						name: 'dir2',
-						type: ItemType.Directory,
-						children: [
-							{
-								id: 3,
-								name: "file2.txt",
-								type: ItemType.File,
-								children: null
-							}
-						],
+						id: 2,
+						path: "hclsyntax/peeker.go",
+						type: ItemType.File,
+						children: null
 					},
-				],
-			},
-		],
+					{
+						id: 3,
+						path: "hclsyntax/public.go",
+						type: ItemType.File,
+						children: null
+					},
+					{
+						id: 3,
+						path: "hclsyntax/token.go",
+						type: ItemType.File,
+						children: null
+					}
+				]
+			}
+		]
 	};
 };
 
+const GetRepositories = () => {
+	return ["hclsyntax", "golang-tools"]
+}
+
 const RepositoryApi = {
 	GetRepository,
+	GetRepositories,
 };
 
 export default RepositoryApi;

@@ -22,6 +22,7 @@ export enum RepositoryTypes {
 	Expand = 'SET_IS_EXPANDED',
     DeselectAll = 'DESELECT_ALL',
     Select = 'SET_IS_SELECTED',
+    SetRepos = 'SET_REPOS',
 }
 
 // The parameters of the repository reducer params
@@ -39,7 +40,11 @@ export type RepositoryPayload = {
     };
     [RepositoryTypes.DeselectAll]: {};
     [RepositoryTypes.Select]: {
-        path: NodePath; isSelected: boolean;
+        path: NodePath;
+        isSelected: boolean;
+    };
+    [RepositoryTypes.SetRepos]: {
+        repos: string[];
     }
 };
 

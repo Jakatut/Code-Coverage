@@ -11,7 +11,11 @@ const resultsTag = (count: number) => {
     )
 };
 
-const SearchBar = () => {
+interface SearchBarProps {
+    hint: string
+}
+
+const SearchBar = ({hint}: SearchBarProps) => {
 
     const repositoryState = useRepositoryState();
     const repositoryDispatch = useRepositoryDispatch();
@@ -22,7 +26,7 @@ const SearchBar = () => {
 			large={true}
 			leftElement={<Icon icon='search' />}
 			onChange={(e) => {repositoryDispatch({type: RepositoryTypes.Search, payload: {query: e.target.value}})}}
-			placeholder='Search Files...'
+			placeholder={hint}
 			rightElement={resultsTag(repositoryState.query_results.count)}
 		/>
         </div>

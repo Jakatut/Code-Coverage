@@ -52,8 +52,9 @@ export type QueryResult = {
 export type RepositoryState = {
     name: string;
     query: string;
-    query_results: QueryResult
+    query_results: QueryResult;
     tree: TreeNodeInfo[];
+    repos: string[];
 
 }
 
@@ -65,6 +66,7 @@ const RepositoryInitialState = {
         tree: undefined,
         count: 0,
     },
+    repos: [],
 }
 
 export default RepositoryInitialState;
