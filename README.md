@@ -111,3 +111,6 @@ make go-build
 Becasue of the "fake" sftp server design decision, some data needs to be primed for that, along with the expected
 Coverage data import.
 To accomplish this, two postman collections are provided. One for the API calls and another for the environment.
+They should have sample data setup in the requests already.
+
+You'll need to use the `Create Repository` request and the `Create bulk test coverage` request once the server is running.
