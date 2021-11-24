@@ -2,6 +2,7 @@ package entities
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"sort"
 	"strings"
@@ -12,15 +13,27 @@ type Coverage struct {
 	FilePath          string  `json:"filepath"`
 	CoveredPercentage float32 `json:"covered_percentage"`
 	CoveredRanges     []Range `json:"covered_ranges"`
-	UncoveredRanges   []Range `json:"uncovered_ranges"`
+	UncoveredRanges   []Range `json:"uncovered_ranges,omitempty"`
 }
 
-func (c Coverage) JsonMarshal() ([]byte, error) {
+func (c *Coverage) JsonMarshal() ([]byte, error) {
 	return json.Marshal(c)
 }
 
-func (c Coverage) JsonUnmarshal(rc io.ReadCloser) error {
+func (c *Coverage) JsonUnmarshal(rc io.ReadCloser) error {
 	return json.NewDecoder(rc).Decode(&c)
+}
+
+type BulkCoverage struct {
+	Coverage []Coverage `json:"coverage"`
+}
+
+func (bc *BulkCoverage) JsonMarshal() ([]byte, error) {
+	return json.Marshal(bc)
+}
+
+func (bc *BulkCoverage) JsonUnmarshal(rc io.ReadCloser) error {
+	return json.NewDecoder(rc).Decode(&bc)
 }
 
 type RangeType int
@@ -31,13 +44,13 @@ const (
 )
 
 type Cursor struct {
-	Row    int
-	Column int
+	Row    int `json:"row"`
+	Column int `json:"col"`
 }
 
 type Range struct {
-	Start Cursor
-	End   Cursor
+	Start Cursor `json:"start"`
+	End   Cursor `json:"end"`
 }
 
 func (r1 *Range) isStartSmallerOrEqual(r2 Range) bool {
@@ -87,9 +100,10 @@ func (c *Coverage) CalculateCoverage(start Cursor, end Cursor, repository Reposi
 func (c *Coverage) CalculateTotalCoverage(repository Repository) float32 {
 	contentLength := repository.GetFileSize(c.FilePath)
 	content, err := repository.GetFileFromRepoStorage(c.FilePath)
-	if err != nil {
+	if err != nil || len(content) == 0 {
 		return 0
 	}
+
 	coverageLength := 0
 	for _, coverage := range flattenOverlappingRanges(c.CoveredRanges) {
 		coverageLength = countCharactersInRange(content, Range{Start: coverage.Start, End: coverage.End})
@@ -104,14 +118,21 @@ func (c *Coverage) CalculateTotalCoverage(repository Repository) float32 {
 func countCharactersInRange(lines string, lineRange Range) int {
 	var characterCount = 0
 	// Count the characters starting at the first line in the range.
-	rows := strings.Split(lines, "\n")
-	for i, row := range rows {
-		if i == 0 { // First row
-			characterCount += len(row[lineRange.Start.Column:])
-		} else if i == len(lines) { // Last row
-			characterCount += len(row[:lineRange.End.Column])
+	rows := strings.SplitAfter(lines, "\n")
+	fmt.Println(lineRange)
+	for i := lineRange.Start.Row; i <= lineRange.End.Row; i++ {
+		// rows[i] += "\n"
+		fmt.Printf("%d:%s", i, rows[i])
+		if i == lineRange.Start.Row && lineRange.Start.Row != lineRange.End.Row { // First row
+			characterCount += len(rows[i][lineRange.Start.Column:])
+		} else if i == lineRange.End.Row { // Last row
+			end := lineRange.End.Column
+			if len(rows[i]) < end {
+				end = len(rows[i])
+			}
+			characterCount += len(rows[i][:end])
 		} else { // Between start and end (every character is assumed to be covered, including whitespace.)
-			characterCount += len(row)
+			characterCount += len(rows[i])
 		}
 	}
 

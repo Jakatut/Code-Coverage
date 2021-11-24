@@ -11,7 +11,7 @@ const RepositoryList = () => {
 
     const onRepoClick = (name: string) => {
         let repo = RepositoryApi.GetRepository(name)
-        repositoryDispatch({type: RepositoryTypes.Update, payload: {name, repo }})
+        repositoryDispatch({type: RepositoryTypes.Update, payload: {name, repo}})
     }
 
     const repoItem = (name: string) => {
@@ -24,7 +24,7 @@ const RepositoryList = () => {
     }, [])
 
     return (
-        <div style={{height: "80%", borderLeft: "solid 1px black", borderRight: "solid 1px black"}}>
+        <div style={{width: "10%", border: "solid 1px black", position: "fixed"}}>
             <b>REPOSITORIES</b>
             <ul>
                 {repositoryState.repos.map((repo: string) => {

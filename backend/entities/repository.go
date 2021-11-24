@@ -83,5 +83,8 @@ func forEachItemIndexed(items []RepositoryItem, callback func(item RepositoryIte
 func (r *Repository) GetFileFromRepoStorage(filePath string) (string, error) {
 	repoDir := os.Getenv("REPOSITORY_DIRECTORY")
 	content, err := ioutil.ReadFile(repoDir + filePath)
+	if err != nil {
+		return "", err
+	}
 	return string(content), err
 }

@@ -19,7 +19,6 @@ const SearchBar = ({hint}: SearchBarProps) => {
 
     const repositoryState = useRepositoryState();
     const repositoryDispatch = useRepositoryDispatch();
-    console.log(repositoryState.query_results.tree)
 	return (
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", border: "solid 1px black", borderBottom: ""}}>
 		<InputGroup

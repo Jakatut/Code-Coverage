@@ -4,7 +4,6 @@ import (
 	"FuzzBuzz/backend/entities"
 	"FuzzBuzz/backend/stores"
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -23,17 +22,16 @@ func (h handleRepositoryGet) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		writeJsonResponse(w, http.StatusNotFound, []byte(err.Error()))
 		return
 	}
+
 	path := r.URL.Query().Get("path")
 	// If the path is provided for a specific file within the repo, try to get it.
 	if len(path) > 1 {
-		fmt.Print(path)
 		lines, err := repo.GetFileFromRepoStorage(path)
 		if err != nil {
 			writeJsonResponse(w, http.StatusNotFound, []byte(err.Error()))
 			return
 		}
 		repoItem := repo.SetFileLines(path, lines)
-		fmt.Print(repoItem.Lines)
 		if json, err := json.Marshal(repoItem); err != nil {
 			writeJsonResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		} else {

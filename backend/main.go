@@ -14,5 +14,5 @@ func main() {
 		return
 	}
 	dataStore := stores.NewDataStore()
-	log.Fatal(api.NewServer("127.0.0.1:3000", dataStore).ListenAndServe())
+	log.Fatal(api.NewServer("127.0.0.1:3001", dataStore).ListenAndServe())
 }

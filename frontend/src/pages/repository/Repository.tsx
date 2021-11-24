@@ -5,22 +5,29 @@ import { NodePath, RepositoryTypes } from 'context/actions/RepositoryActions';
 import RepositoryApi from 'api/RepositoryApi';
 import SearchBar from 'components/SearchBar';
 import RepositoryList from 'pages/repository/RepositoryList';
+import { ItemData, ItemType } from 'api/models/RepositoryModel';
+import { useNavigate } from 'react-router';
 
 const Repository = () => {
 
+    const navigate = useNavigate();
     const repositoryState = useRepositoryState();
     const repositoryDispatcher = useRepositoryDispatch();
 
     const handleNodeClick = React.useCallback(
         (node: TreeNodeInfo, nodePath: NodePath, e: React.MouseEvent<HTMLElement>) => {
-            const originallySelected = node.isSelected;
-            if (!e.shiftKey) {
-                repositoryDispatcher({ type: RepositoryTypes.DeselectAll, payload: {} });
+            if ((node.nodeData as ItemData).type === ItemType.Directory) {
+                repositoryDispatcher({
+                    payload: { path: nodePath, isExpanded: true },
+                    type: RepositoryTypes.Expand,
+                });
+            } else {
+                repositoryDispatcher({
+                    payload: { path: nodePath, isSelected: true },
+                    type: RepositoryTypes.Select,
+                });
+                navigate("/coverage")
             }
-            repositoryDispatcher({
-                payload: { path: nodePath, isSelected: originallySelected == null ? true : !originallySelected },
-                type: RepositoryTypes.Select
-            });
     },[]);
 
     const handleNodeCollapse = React.useCallback((_node: TreeNodeInfo, nodePath: NodePath) => {
@@ -37,10 +44,10 @@ const Repository = () => {
         });
     }, []);
 
-    useEffect(() => {
-        const repo = RepositoryApi.GetRepository("repo1");
-        repositoryDispatcher({type: RepositoryTypes.Update, payload: {name: "repo1", repo}})
-    }, [])
+    // useEffect(() => {
+    //     const repo = RepositoryApi.GetRepository(repositoryState.name);
+    //     repositoryDispatcher({type: RepositoryTypes.Update, payload: {name: "hclsyntax", repo}})
+    // }, [])
 
     return (
         <div>

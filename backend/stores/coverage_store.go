@@ -4,7 +4,6 @@ import (
 	"FuzzBuzz/backend/entities"
 	"errors"
 	"fmt"
-	"strings"
 )
 
 // The CoverageStore is an in-memory data storage device, similar to a db.
@@ -18,6 +17,12 @@ type CoverageStore struct {
 func (cs *CoverageStore) Create(coverage entities.Coverage) (entities.Coverage, error) {
 	cs.Coverage = append(cs.Coverage, coverage)
 	return coverage, nil
+}
+
+// Appends a new coverage record to the store.
+func (cs *CoverageStore) CreateBulk(bulkCoverage entities.BulkCoverage) (entities.BulkCoverage, error) {
+	cs.Coverage = append(cs.Coverage, bulkCoverage.Coverage...)
+	return bulkCoverage, nil
 }
 
 // Get a coverage record from the store (by filePath and FuzzerVersion)
@@ -36,15 +41,15 @@ func (cs *CoverageStore) GetAll(coverage entities.Coverage) (entities.Coverage, 
 	totalCoverage := entities.Coverage{FilePath: coverage.FilePath}
 	for _, c := range cs.Coverage {
 		if c.FilePath == coverage.FilePath {
-			totalCoverage.CoveredRanges = append(totalCoverage.CoveredRanges, coverage.CoveredRanges...)
-			totalCoverage.UncoveredRanges = append(totalCoverage.UncoveredRanges, coverage.UncoveredRanges...)
+			totalCoverage.CoveredRanges = append(totalCoverage.CoveredRanges, c.CoveredRanges...)
+			totalCoverage.UncoveredRanges = append(totalCoverage.UncoveredRanges, c.UncoveredRanges...)
 		}
 	}
-
 	if len(totalCoverage.CoveredRanges) == 0 && len(totalCoverage.UncoveredRanges) == 0 {
-		return entities.Coverage{}, errors.New(fmt.Sprintf("Could not find file by the name of %s", coverage.FilePath))
+		return entities.Coverage{}, errors.New(fmt.Sprintf("Could not find file by the name of %s, %v+", coverage.FilePath, totalCoverage))
 	}
 
+	totalCoverage.FuzzerVersion = cs.getLastFuzzerVersion(coverage.FilePath)
 	return totalCoverage, nil
 }
 
@@ -64,9 +69,8 @@ func (cs *CoverageStore) Update(updateCoverage entities.Coverage) (entities.Cove
 func (cs *CoverageStore) getLastFuzzerVersion(filePath string) int64 {
 	var maxVersion int64 = 0
 	// Get the "root/repo name" to search for a specific repo's fuzzer version
-	queryDir := strings.Split(filePath, "/")[0]
 	for _, coverage := range cs.Coverage {
-		if coverage.FuzzerVersion > maxVersion && strings.HasPrefix(coverage.FilePath, queryDir) {
+		if coverage.FuzzerVersion > maxVersion && coverage.FilePath == filePath {
 			maxVersion = coverage.FuzzerVersion
 		}
 	}

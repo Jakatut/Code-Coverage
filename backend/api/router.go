@@ -40,6 +40,7 @@ func NewRouter(dataStore *stores.DataStore) *mux.Router {
 	apiV1.Handle("/repository/{name}", handleRepositoryGet{&dataStore.RepoStore}).Methods("GET") // Get repo and repo contents by path (optional)
 
 	apiV1.Handle("/repository/{name}/coverage", handleCoverageGet{&dataStore.CoverageStore, &dataStore.RepoStore}).Methods("GET")
+	apiV1.Handle("/repository/{name}/bulkCoverage", handleCoverageCreateBulk{&dataStore.CoverageStore}).Methods("POST")
 	apiV1.Handle("/repository/{name}/coverage", handleCoverageCreate{&dataStore.CoverageStore}).Methods("POST")
 	apiV1.Handle("/repository/{name}/coverage", handleCoverageUpdate{&dataStore.CoverageStore}).Methods("PUT")
 

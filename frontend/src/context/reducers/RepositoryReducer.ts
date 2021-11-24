@@ -1,11 +1,8 @@
-import { Tree, TreeNodeInfo } from '@blueprintjs/core';
+import { TreeNodeInfo } from '@blueprintjs/core';
 import RepositoryActions, { RepositoryTypes, RepositoryPayload } from 'context/actions/RepositoryActions';
 import { RepositoryState } from 'context/initial_states/RepositoryInitialState';
 import { cloneDeep } from "lodash";
 import RepositoryModel, { ForNodeAtPath, ForEachNode, ItemData, ItemType, RepositoryItem, CountNodes } from 'api/models/RepositoryModel';
-import { mainModule } from 'process';
-
-type NodePath = number[]
 
 const RepositoryReducer = (state: RepositoryState, action: RepositoryActions): RepositoryState => {
     const deselectAll = (): RepositoryState => {
@@ -22,15 +19,22 @@ const RepositoryReducer = (state: RepositoryState, action: RepositoryActions): R
 
     const setIsSelected = ({path, isSelected}: RepositoryPayload[RepositoryTypes.Select]): RepositoryState => {
         const newState = cloneDeep(state);
-        ForNodeAtPath(newState.query_results.tree ?? newState.tree, path, node => (node.isSelected = isSelected));
+        ForNodeAtPath(newState.query_results.tree ?? newState.tree, path, (node) => {
+            node.isSelected = isSelected
+            newState.filePath = (node.nodeData as ItemData).path
+        });
+        console.log(newState)
         return newState
     };
     
     const updateRepository = ({name, repo}: RepositoryPayload[RepositoryTypes.Update]): RepositoryState => {
-        const tree = repo.items!.map((item: RepositoryItem): TreeNodeInfo => {
+        let tree = repo.items!.map((item: RepositoryItem): TreeNodeInfo => {
             return RepositoryModel.RepositoryItemToTreeNodeInfo(item);
         });
-        return {...state, name, tree}
+        let query_results = state.query_results;
+        query_results.tree = undefined
+        query_results.count = 0
+        return {...state, name, tree, query_results}
 	};
 
     const searchRepository = ({query}: RepositoryPayload[RepositoryTypes.Search]) => {
