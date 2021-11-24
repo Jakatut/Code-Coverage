@@ -1,6 +1,6 @@
 # FuzzBuzz-Take-Home
 
-This Repository contains the Take Home project for the Software Develop Position at FuzzBuzz
+This Repository contains the Take Home project for the Software Developer Position at FuzzBuzz
 
 ## Project Requirements
 
