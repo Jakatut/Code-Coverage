@@ -105,3 +105,9 @@ make go-build
 ```bash
 ./bin/backend # In FuzzBuzz/backend. 
 ```
+
+## Data Priming.
+
+Becasue of the "fake" sftp server design decision, some data needs to be primed for that, along with the expected
+Coverage data import.
+To accomplish this, two postman collections are provided. One for the API calls and another for the environment.
