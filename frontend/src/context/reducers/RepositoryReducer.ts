@@ -21,7 +21,7 @@ const RepositoryReducer = (state: RepositoryState, action: RepositoryActions): R
         const newState = cloneDeep(state);
         ForNodeAtPath(newState.query_results.tree ?? newState.tree, path, (node) => {
             node.isSelected = isSelected
-            newState.filePath = (node.nodeData as ItemData).path
+            newState.file_path = (node.nodeData as ItemData).path
         });
         console.log(newState)
         return newState
@@ -45,14 +45,15 @@ const RepositoryReducer = (state: RepositoryState, action: RepositoryActions): R
         }
         newState.query_results.tree = [];
         let found_ids: number[] = []
+
+        // Search the repository by the path query.
+        // If the node's (file/directory) path includes the query, it may be apart of the search. 
         ForEachNode(newState.tree, (node) => {
             if ((node.nodeData as ItemData).path.includes(query)) {
                 if (!found_ids.includes(node.id as number)) {
+                    // Expand any directories that are within the query.
                     if ((node.nodeData as ItemData).type === ItemType.Directory ) {
                         node.isExpanded = true;
-                        ForEachNode(node.childNodes, (child) => {
-                            found_ids.push(child.id as number)
-                        })
                     }
                     node.isSelected = true;
                     newState.query_results.tree?.push(node)
@@ -62,7 +63,6 @@ const RepositoryReducer = (state: RepositoryState, action: RepositoryActions): R
         });
 
         newState.query_results.count = CountNodes(newState.query_results.tree)
-        
         return newState;
     };
 

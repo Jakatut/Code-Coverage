@@ -21,7 +21,7 @@ const RepositoryList = () => {
     useEffect(() => {
         let repos = RepositoryApi.GetRepositories()
         repositoryDispatch({type: RepositoryTypes.SetRepos, payload: {repos}})
-    }, [])
+    }, [repositoryDispatch])
 
     return (
         <div style={{width: "10%", border: "solid 1px black", position: "fixed"}}>

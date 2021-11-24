@@ -1,4 +1,3 @@
-import React from 'react';
 import { Icon, InputGroup, Tag } from '@blueprintjs/core';
 import { useRepositoryDispatch, useRepositoryState } from 'context/providers/RepositoryProvider';
 import { RepositoryTypes } from 'context/actions/RepositoryActions';

@@ -2,19 +2,18 @@ import { Tree, TreeNodeInfo } from '@blueprintjs/core'
 import { ContextMenu2 } from '@blueprintjs/popover2'
 import { POPOVER2_CONTENT_SIZING } from '@blueprintjs/popover2/lib/esm/classes'
 import { NodePath } from 'context/actions/RepositoryActions'
-import { forEachChild } from 'typescript'
 
 export enum ItemType {
 	Directory = 'DIRECTORY',
 	File = 'FILE',
 }
 
-export type Repository = {
+export interface Repository {
 	name: string;
 	items: RepositoryItem[]|null;
 }
 
-export type RepositoryItem = {
+export interface RepositoryItem {
     id: number;
 	path: string;
 	type: ItemType;

@@ -1,5 +1,3 @@
-// Create each type of action and give it the params within th RepositoryPayload.
-
 import { Repository } from 'api/models/RepositoryModel';
 
 // This will let us access each payload member within the reducers.
@@ -26,7 +24,7 @@ export enum RepositoryTypes {
 }
 
 // The parameters of the repository reducer params
-export type RepositoryPayload = {
+export interface RepositoryPayload {
 	[RepositoryTypes.Update]: {
         name: string;
         repo: Repository;

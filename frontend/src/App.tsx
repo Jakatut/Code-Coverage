@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import Repository from 'pages/repository/Repository';
 import { RepositoryProvider } from 'context/providers/RepositoryProvider';

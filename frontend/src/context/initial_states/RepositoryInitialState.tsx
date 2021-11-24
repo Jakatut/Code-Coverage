@@ -1,21 +1,19 @@
 import { TreeNodeInfo } from '@blueprintjs/core'
-import { ContextMenu2 } from '@blueprintjs/popover2';
-import { contentSizing } from 'api/models/RepositoryModel';
 
 const tree: TreeNodeInfo[] = [];
 
-export type QueryResult = {
+export interface QueryResult {
     tree: TreeNodeInfo[]|undefined;
     count: number;
 }
 
-export type RepositoryState = {
+export interface RepositoryState {
     name: string;
     query: string;
     query_results: QueryResult;
     tree: TreeNodeInfo[];
     repos: string[];
-    filePath: string|undefined;
+    file_path: string|undefined;
 }
 
 const RepositoryInitialState = {
@@ -27,7 +25,7 @@ const RepositoryInitialState = {
         count: 0,
     },
     repos: [],
-    filePath: undefined
+    file_path: undefined
 }
 
 export default RepositoryInitialState;

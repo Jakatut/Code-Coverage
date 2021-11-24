@@ -1,4 +1,4 @@
-import axios from 'axios';
+// import axios from 'axios';
 import { ItemType, Repository } from 'api/models/RepositoryModel';
 
 export const GetRepository = (name: string): Repository => {
