@@ -4,6 +4,7 @@ import (
 	"FuzzBuzz/backend/api"
 	"FuzzBuzz/backend/stores"
 	"log"
+	"os"
 
 	"github.com/joho/godotenv"
 )
@@ -14,5 +15,6 @@ func main() {
 		return
 	}
 	dataStore := stores.NewDataStore()
-	log.Fatal(api.NewServer("127.0.0.1:3001", dataStore).ListenAndServe())
+	port := os.Getenv("PORT")
+	log.Fatal(api.NewServer("127.0.0.1"+port, dataStore).ListenAndServe())
 }
