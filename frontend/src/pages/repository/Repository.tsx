@@ -2,7 +2,7 @@ import React from 'react';
 import { Classes, TreeNodeInfo, Tree } from "@blueprintjs/core";
 import { useRepositoryDispatch, useRepositoryState } from 'context/providers/RepositoryProvider';
 import { NodePath, RepositoryTypes } from 'context/actions/RepositoryActions';
-import SearchBar from 'components/SearchBar';
+import SearchBar from 'pages/repository/SearchBar';
 import RepositoryList from 'pages/repository/RepositoryList';
 import { ItemData, ItemType } from 'api/models/RepositoryModel';
 import { useNavigate } from 'react-router';
@@ -60,7 +60,7 @@ const Repository = () => {
                 </div>
                 <div style={{ border: "solid 1px black", display: "flex", justifyContent: "center", alignItems: "center", listStyle: "none"}}>
                     <Tree
-                        contents={repositoryState.query_results.tree ?? repositoryState.tree} // use query results first if available.
+                        contents={repositoryState.queryResults.tree ?? repositoryState.tree} // use query results first if available.
                         onNodeClick={handleNodeClick}
                         onNodeCollapse={handleNodeCollapse}
                         onNodeExpand={handleNodeExpand}

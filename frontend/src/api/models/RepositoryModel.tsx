@@ -8,9 +8,14 @@ export enum ItemType {
 	File = 'FILE',
 }
 
+// 
+export interface Repositories {
+    repositories: Repository[]
+}
+
 export interface Repository {
 	name: string;
-	items: RepositoryItem[]|null;
+	items: RepositoryItem[]|undefined;
 }
 
 export interface RepositoryItem {
@@ -18,6 +23,7 @@ export interface RepositoryItem {
 	path: string;
 	type: ItemType;
 	children: RepositoryItem[]|null;
+    content: string
 }
 
 export interface ItemData {

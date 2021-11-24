@@ -47,6 +47,29 @@ func (h handleRepositoryGet) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+type handleRepositoryGetAll struct {
+	datastore *stores.RepositoryStore
+}
+
+func (h handleRepositoryGetAll) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	repositores := make([]entities.Repository, 0, len(h.datastore.Repo))
+	for k := range h.datastore.Repo {
+		repositores = append(repositores, entities.Repository{Name: k})
+	}
+
+	if len(repositores) == 0 {
+		writeJsonResponse(w, http.StatusNotFound, []byte("No Repositores"))
+		return
+	}
+
+	reposReponse := entities.Repositories{Repos: repositores}
+	if json, err := reposReponse.JsonMarshal(); err != nil {
+		writeJsonResponse(w, http.StatusInternalServerError, json)
+	} else {
+		writeJsonResponse(w, http.StatusOK, json)
+	}
+}
+
 type handleRepositoryCreate struct {
 	datastore *stores.RepositoryStore
 }

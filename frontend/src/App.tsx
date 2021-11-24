@@ -3,7 +3,7 @@ import './App.css';
 import Repository from 'pages/repository/Repository';
 import { RepositoryProvider } from 'context/providers/RepositoryProvider';
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
-import Coverage from 'pages/coverage/coverage';
+import CodeCoverage from 'pages/coverage/coverage';
 
 function App() {
   return (
@@ -12,7 +12,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Repository/>}/>
-            <Route path="/coverage" element={<Coverage/>}/>
+            <Route path="/coverage" element={<CodeCoverage/>}/>
           </Routes>
         </BrowserRouter>
       </RepositoryProvider>

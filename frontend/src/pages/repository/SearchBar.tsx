@@ -25,7 +25,7 @@ const SearchBar = ({hint}: SearchBarProps) => {
 			leftElement={<Icon icon='search' />}
 			onChange={(e) => {repositoryDispatch({type: RepositoryTypes.Search, payload: {query: e.target.value}})}}
 			placeholder={hint}
-			rightElement={resultsTag(repositoryState.query_results.count)}
+			rightElement={resultsTag(repositoryState.queryResults.count)}
 		/>
         </div>
 	);

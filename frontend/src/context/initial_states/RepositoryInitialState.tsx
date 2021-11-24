@@ -10,22 +10,22 @@ export interface QueryResult {
 export interface RepositoryState {
     name: string;
     query: string;
-    query_results: QueryResult;
+    queryResults: QueryResult;
     tree: TreeNodeInfo[];
     repos: string[];
-    file_path: string|undefined;
+    filePath: string|undefined;
 }
 
 const RepositoryInitialState = {
-    name: "Default Repository",
+    name: "",
     query: "",
     tree: tree,
-    query_results: {
+    queryResults: {
         tree: undefined,
         count: 0,
     },
     repos: [],
-    file_path: undefined
+    filePath: undefined
 }
 
 export default RepositoryInitialState;

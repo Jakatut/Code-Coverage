@@ -16,5 +16,5 @@ func main() {
 	}
 	dataStore := stores.NewDataStore()
 	port := os.Getenv("PORT")
-	log.Fatal(api.NewServer("127.0.0.1"+port, dataStore).ListenAndServe())
+	log.Fatal(api.NewServer("127.0.0.1:"+port, dataStore).ListenAndServe())
 }

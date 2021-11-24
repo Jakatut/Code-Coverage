@@ -22,9 +22,10 @@ func NewServer(listenAddress string, dataStore *stores.DataStore) *http.Server {
 	serverRouter.Handle("/health", handleHealth{})
 	recoveryHandler := handlers.RecoveryHandler(handlers.PrintRecoveryStack(true), handlers.RecoveryLogger(log.Default()))
 	timeoutHandler := timeoutHandler(25 * time.Second)
+	corsHandler := handlers.CORS(handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}), handlers.AllowedMethods([]string{"GET", "POST", "OPTIONS"}), handlers.AllowedOrigins([]string{"*"}))
 
 	server := &http.Server{
-		Handler: timeoutHandler(recoveryHandler(serverRouter)),
+		Handler: timeoutHandler(recoveryHandler(corsHandler(serverRouter))),
 		Addr:    listenAddress,
 	}
 
@@ -34,15 +35,15 @@ func NewServer(listenAddress string, dataStore *stores.DataStore) *http.Server {
 func NewRouter(dataStore *stores.DataStore) *mux.Router {
 
 	serverRouter := mux.NewRouter()
+	serverRouter.Use(mux.CORSMethodMiddleware(serverRouter))
 
-	apiV1 := serverRouter.PathPrefix("/api/v1").Subrouter()
-	apiV1.Handle("/repository", handleRepositoryCreate{&dataStore.RepoStore}).Methods("POST")
-	apiV1.Handle("/repository/{name}", handleRepositoryGet{&dataStore.RepoStore}).Methods("GET") // Get repo and repo contents by path (optional)
-
-	apiV1.Handle("/repository/{name}/coverage", handleCoverageGet{&dataStore.CoverageStore, &dataStore.RepoStore}).Methods("GET")
-	apiV1.Handle("/repository/{name}/bulkCoverage", handleCoverageCreateBulk{&dataStore.CoverageStore}).Methods("POST")
-	apiV1.Handle("/repository/{name}/coverage", handleCoverageCreate{&dataStore.CoverageStore}).Methods("POST")
-	apiV1.Handle("/repository/{name}/coverage", handleCoverageUpdate{&dataStore.CoverageStore}).Methods("PUT")
+	apiV1 := serverRouter.PathPrefix("/api/").Subrouter()
+	apiV1.Handle("/repository", handleRepositoryCreate{&dataStore.RepoStore}).Methods("POST", "OPTIONS")
+	apiV1.Handle("/repository", handleRepositoryGetAll{&dataStore.RepoStore}).Methods("GET", "OPTIONS")
+	apiV1.Handle("/repository/{name}", handleRepositoryGet{&dataStore.RepoStore}).Methods("GET", "OPTIONS") /* Query params: path - The path of the file in the repository.*/
+	apiV1.Handle("/repository/{name}/coverage", handleCoverageGet{&dataStore.CoverageStore, &dataStore.RepoStore}).Methods("GET", "OPTIONS")
+	apiV1.Handle("/repository/{name}/bulkCoverage", handleCoverageCreateBulk{&dataStore.CoverageStore}).Methods("POST", "OPTIONS")
+	apiV1.Handle("/repository/{name}/coverage", handleCoverageCreate{&dataStore.CoverageStore}).Methods("POST", "OPTIONS")
 
 	return serverRouter
 }

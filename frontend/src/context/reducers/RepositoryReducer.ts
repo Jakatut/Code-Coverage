@@ -7,23 +7,22 @@ import RepositoryModel, { ForNodeAtPath, ForEachNode, ItemData, ItemType, Reposi
 const RepositoryReducer = (state: RepositoryState, action: RepositoryActions): RepositoryState => {
     const deselectAll = (): RepositoryState => {
         const newState = cloneDeep(state);
-        ForEachNode(newState.query_results.tree ?? newState.tree, node => (node.isSelected = false));
+        ForEachNode(newState.queryResults.tree ?? newState.tree, node => (node.isSelected = false));
         return newState;
     };
 
     const setIsExpanded = ({path, isExpanded}: RepositoryPayload[RepositoryTypes.Expand]): RepositoryState => {
         const newState = cloneDeep(state);
-        ForNodeAtPath(newState.query_results.tree ?? newState.tree, path, node => (node.isExpanded = isExpanded));
+        ForNodeAtPath(newState.queryResults.tree ?? newState.tree, path, node => (node.isExpanded = isExpanded));
         return newState;
     };
 
     const setIsSelected = ({path, isSelected}: RepositoryPayload[RepositoryTypes.Select]): RepositoryState => {
         const newState = cloneDeep(state);
-        ForNodeAtPath(newState.query_results.tree ?? newState.tree, path, (node) => {
+        ForNodeAtPath(newState.queryResults.tree ?? newState.tree, path, (node) => {
             node.isSelected = isSelected
-            newState.file_path = (node.nodeData as ItemData).path
+            newState.filePath = (node.nodeData as ItemData).path
         });
-        console.log(newState)
         return newState
     };
     
@@ -31,42 +30,44 @@ const RepositoryReducer = (state: RepositoryState, action: RepositoryActions): R
         let tree = repo.items!.map((item: RepositoryItem): TreeNodeInfo => {
             return RepositoryModel.RepositoryItemToTreeNodeInfo(item);
         });
-        let query_results = state.query_results;
-        query_results.tree = undefined
-        query_results.count = 0
-        return {...state, name, tree, query_results}
+        let queryResults = state.queryResults;
+        queryResults.tree = undefined
+        queryResults.count = 0
+        return {...state, name, tree, queryResults}
 	};
 
     const searchRepository = ({query}: RepositoryPayload[RepositoryTypes.Search]) => {
         const newState = cloneDeep(state);
         if (query.length === 0) {
-            newState.query_results.tree = undefined
+            newState.queryResults.tree = undefined
+            newState.queryResults.count = CountNodes(newState.queryResults.tree)
             return newState
         }
-        newState.query_results.tree = [];
-        let found_ids: number[] = []
+        newState.queryResults.tree = [];
+        let foundIds: number[] = []
 
         // Search the repository by the path query.
         // If the node's (file/directory) path includes the query, it may be apart of the search. 
         ForEachNode(newState.tree, (node) => {
             if ((node.nodeData as ItemData).path.includes(query)) {
-                if (!found_ids.includes(node.id as number)) {
+                if (!foundIds.includes(node.id as number)) {
                     // Expand any directories that are within the query.
                     if ((node.nodeData as ItemData).type === ItemType.Directory ) {
                         node.isExpanded = true;
                     }
                     node.isSelected = true;
-                    newState.query_results.tree?.push(node)
-                    found_ids.push(node.id as number);
+                    newState.queryResults.tree?.push(node)
+                    foundIds.push(node.id as number);
                 }
             }
         });
 
-        newState.query_results.count = CountNodes(newState.query_results.tree)
+        newState.queryResults.count = CountNodes(newState.queryResults.tree)
         return newState;
     };
 
     const setRepos = ({repos}: RepositoryPayload[RepositoryTypes.SetRepos]) => {
+        
         return {
             ...state,
             repos

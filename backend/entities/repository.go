@@ -9,6 +9,17 @@ import (
 
 type RepositoryItemType string
 type FileLines [][]rune
+type Repositories struct {
+	Repos []Repository `json:"repositories"`
+}
+
+func (r Repositories) JsonMarshal() ([]byte, error) {
+	return json.Marshal(r)
+}
+
+func (r *Repositories) JsonUnmarshal(rc io.ReadCloser) error {
+	return json.NewDecoder(rc).Decode(r)
+}
 
 const (
 	DIRECTORY RepositoryItemType = "DIRECTORY"
@@ -19,13 +30,13 @@ type RepositoryItem struct {
 	Id       int32            `json:"id"`
 	Path     string           `json:"path"`
 	ItemType string           `json:"type"`
-	Children []RepositoryItem `json:"children"`
-	Lines    string           `json:"content"`
+	Children []RepositoryItem `json:"children,omitempty"`
+	Lines    string           `json:"content,omitempty"`
 }
 
 type Repository struct {
 	Name  string           `json:"name"`
-	Items []RepositoryItem `json:"items"`
+	Items []RepositoryItem `json:"items,omitempty"`
 }
 
 func (r Repository) JsonMarshal() ([]byte, error) {

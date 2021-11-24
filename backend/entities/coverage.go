@@ -2,7 +2,6 @@ package entities
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"sort"
 	"strings"
@@ -119,15 +118,14 @@ func countCharactersInRange(lines string, lineRange Range) int {
 	var characterCount = 0
 	// Count the characters starting at the first line in the range.
 	rows := strings.SplitAfter(lines, "\n")
-	fmt.Println(lineRange)
 	for i := lineRange.Start.Row; i <= lineRange.End.Row; i++ {
-		// rows[i] += "\n"
-		fmt.Printf("%d:%s", i, rows[i])
 		if i == lineRange.Start.Row && lineRange.Start.Row != lineRange.End.Row { // First row
-			characterCount += len(rows[i][lineRange.Start.Column:])
+			if isStartValidForLine(lineRange.Start.Column, rows[i]) {
+				characterCount += len(rows[i][lineRange.Start.Column:])
+			}
 		} else if i == lineRange.End.Row { // Last row
 			end := lineRange.End.Column
-			if len(rows[i]) < end {
+			if isEndValidForLine(end, rows[i]) {
 				end = len(rows[i])
 			}
 			characterCount += len(rows[i][:end])
@@ -137,6 +135,14 @@ func countCharactersInRange(lines string, lineRange Range) int {
 	}
 
 	return characterCount
+}
+
+func isStartValidForLine(start int, line string) bool {
+	return start <= len(line)
+}
+
+func isEndValidForLine(end int, line string) bool {
+	return end > len(line)
 }
 
 func sortRanges(ranges []Range) {

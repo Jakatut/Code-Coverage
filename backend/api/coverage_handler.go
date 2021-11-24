@@ -8,34 +8,6 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type handleCoverageUpdate struct {
-	datastore *stores.CoverageStore
-}
-
-// Coverage update, don't need
-func (h handleCoverageUpdate) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	var coverage entities.Coverage
-	if err := coverage.JsonUnmarshal(r.Body); err == nil {
-		writeJsonResponse(w, http.StatusBadRequest, nil)
-	}
-
-	// Attempt to update the coverage. If the coverage data is not found (by filePath and fuzzer version)
-	// respond with an error.
-	coverage, err := h.datastore.Get(coverage)
-	if err != nil {
-		writeJsonResponse(w, http.StatusNotFound, nil)
-		return
-	}
-
-	// Respond with the updated data or failure.
-	if json, err := coverage.JsonMarshal(); err != nil {
-		writeJsonResponse(w, http.StatusInternalServerError, nil)
-	} else {
-		writeJsonResponse(w, http.StatusCreated, json)
-	}
-}
-
-// Coverage get for file
 type handleCoverageGet struct {
 	coverageStore   *stores.CoverageStore
 	repositoryStore *stores.RepositoryStore

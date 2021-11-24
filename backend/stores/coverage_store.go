@@ -46,7 +46,7 @@ func (cs *CoverageStore) GetAll(coverage entities.Coverage) (entities.Coverage, 
 		}
 	}
 	if len(totalCoverage.CoveredRanges) == 0 && len(totalCoverage.UncoveredRanges) == 0 {
-		return entities.Coverage{}, errors.New(fmt.Sprintf("Could not find file by the name of %s, %v+", coverage.FilePath, totalCoverage))
+		return entities.Coverage{}, errors.New(fmt.Sprintf("Could not find file by the name of %s", coverage.FilePath, totalCoverage))
 	}
 
 	totalCoverage.FuzzerVersion = cs.getLastFuzzerVersion(coverage.FilePath)
