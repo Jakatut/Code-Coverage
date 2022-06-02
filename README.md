@@ -2,7 +2,7 @@
 
 ## Project Requirements
 
-- Design an API that can:
+- Design an API that can
 
   - Return a list of potential files
   - Return coverage information for a specific file
